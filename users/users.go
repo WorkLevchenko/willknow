@@ -36,7 +36,7 @@ func (userService) VerifyUser(user User) bool {
 	return err == nil
 }
 
-func (userService) createUser(newUser User) error {
+func (userService) CreateUser(newUser User) error {
 	_, ok := authUserDB[newUser.Email]
 	if ok {
 		fmt.Println("User already exists")
@@ -49,7 +49,7 @@ func (userService) createUser(newUser User) error {
 	}
 	newAuthUser := authUser{
 		email:        newUser.Email,
-		passwordHash: getPasswordHash(newUser.Password),
+		passwordHash: passwordHash,
 	}
 	authUserDB[newAuthUser.email] = newAuthUser
 	return nil

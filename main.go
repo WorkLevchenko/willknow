@@ -23,7 +23,7 @@ func templating(w http.ResponseWriter, fileName string, data interface{}) {
 
 func signInUser(w http.ResponseWriter, r *http.Request) {
 	newUser := getUser(r)
-	ok := users.DefaultUserService.GetUser(newUser)
+	ok := users.DefaultUserService.VerifyUser(newUser)
 	if !ok {
 		fileName := "sign-in.html"
 		t, _ := template.ParseFiles(fileName)
@@ -32,7 +32,7 @@ func signInUser(w http.ResponseWriter, r *http.Request) {
 	}
 	fileName := "sign-in.html"
 	t, _ := template.ParseFiles(fileName)
-	t.ExecuteTemplate(w, fileName, "New user sign in failure.")
+	t.ExecuteTemplate(w, fileName, "New user sign in succesfuly.")
 	return
 }
 
@@ -47,7 +47,7 @@ func signUpUser(w http.ResponseWriter, r *http.Request) {
 	}
 	fileName := "sign-up.html"
 	t, _ := template.ParseFiles(fileName)
-	t.ExecuteTemplate(w, fileName, "New user sign up failure.")
+	t.ExecuteTemplate(w, fileName, "New user sign up succesful.")
 	return
 }
 
