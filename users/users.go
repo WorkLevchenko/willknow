@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/WorkLevchenko/willknow/validator"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,8 +22,7 @@ var authUserDB = map[string]authUser{} // email => authUSer{email, hash}
 
 var DefaultUserService userService
 
-type userService struct {
-}
+type userService struct{}
 
 func (userService) VerifyUser(user User) bool {
 	authUser, ok := authUserDB[user.Email]
@@ -37,10 +37,20 @@ func (userService) VerifyUser(user User) bool {
 }
 
 func (userService) CreateUser(newUser User) error {
+	//Валидация email
+	validedEmail := validator.EmailValidator(newUser.Email)
+	if !validedEmail {
+		fmt.Println("Email isn't valid")
+		return errors.New("Email isn't valid")
+	}
 	_, ok := authUserDB[newUser.Email]
 	if ok {
 		fmt.Println("User already exists")
 		return errors.New("User already exists")
+	}
+	//Валидация пароля
+	if len(newUser.Password) < 8 {
+		fmt.Println("Password too short")
 	}
 	passwordHash, err := getPasswordHash(newUser.Password)
 	if err != nil {

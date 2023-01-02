@@ -8,6 +8,13 @@ import (
 	"github.com/WorkLevchenko/willknow/users"
 )
 
+/*
+Регистрация и авторизация. Основная работа проводится в модуле "users"
+
+Sign Up - регистрация
+Sign In - авторизация
+*/
+
 func getSighInPage(w http.ResponseWriter, r *http.Request) {
 	templating(w, "sign-in.html", nil)
 }
@@ -59,6 +66,8 @@ func getUser(r *http.Request) users.User {
 		Password: password,
 	}
 }
+
+//Роутинг и главная функция.
 
 func userHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
