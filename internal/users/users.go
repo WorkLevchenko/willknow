@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/WorkLevchenko/willknow/validator"
+	"github.com/WorkLevchenko/willknow/internal/validator"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -41,7 +41,7 @@ func (userService) CreateUser(newUser User) error {
 	validedEmail := validator.EmailValidator(newUser.Email)
 	if !validedEmail {
 		fmt.Println("Email isn't valid")
-		return errors.New("Email isn't valid")
+		return errors.New("email isn't valid")
 	}
 	_, ok := authUserDB[newUser.Email]
 	if ok {

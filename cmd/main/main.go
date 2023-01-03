@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/WorkLevchenko/willknow/users"
+	"github.com/WorkLevchenko/willknow/internal/users"
 )
 
 /*
