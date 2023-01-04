@@ -1,11 +1,11 @@
 package main
 
 import (
+	"flag"
 	"log"
-	"net/http"
-	"text/template"
 
-	"github.com/WorkLevchenko/willknow/internal/users"
+	"github.com/BurntSushi/toml"
+	"github.com/WorkLevchenko/willknow/internal/app/apiserver"
 )
 
 /*
@@ -13,7 +13,7 @@ import (
 
 Sign Up - регистрация
 Sign In - авторизация
-*/
+
 
 func getSighInPage(w http.ResponseWriter, r *http.Request) {
 	templating(w, "sign-in.html", nil)
@@ -81,8 +81,26 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 		getSighUpPage(w, r)
 	}
 }
+*/
+
+var (
+	configPath string
+)
+
+func init() {
+	flag.StringVar(&configPath, "config-path", "configs/apiserver.toml", "path to config file")
+}
 
 func main() {
-	http.HandleFunc("/", userHandler)
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	flag.Parse()
+	config := apiserver.NewConfig() // Инициализируем конфиг
+	_, err := toml.DecodeFile(configPath, config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	s := apiserver.New(config) // Передаём порт в качестве аргумента
+	if err := s.Start(); err != nil {
+		log.Fatal(err)
+	}
+	//http.HandleFunc("/", userHandler)
 }
