@@ -1,29 +1,50 @@
-package store
+package sqlstore
 
-import "github.com/WorkLevchenko/willknow/internal/app/model"
+import (
+	"database/sql"
+
+	"github.com/WorkLevchenko/willknow/internal/app/model"
+	"github.com/WorkLevchenko/willknow/internal/app/store"
+)
 
 type UserRepository struct {
 	store *Store
 }
 
 // Принимает на входе модель, которую мы хотим создать в БД и возваращает её же
-func (r *UserRepository) Create(u *model.User) (*model.User, error) {
+func (r *UserRepository) Create(u *model.User) error {
 	if err := u.Validate(); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := u.BeforeCreate(); err != nil {
-		return nil, err
+		return err
 	}
 	/*
 		Метод .Scan для того, чтобы после того, как зпрос вернул строку, он эти значения
 		смапил в переданные аргументы
 	*/
-	if err := r.store.db.QueryRow(
+	return r.store.db.QueryRow(
 		"INSERT INTO users (email, encrypted_password) VALUES ($1, $2) RETURNING id",
 		u.Email,
 		u.EncryptedPassword,
-	).Scan(&u.ID); err != nil {
+	).Scan(&u.ID)
+}
+
+func (r *UserRepository) Find(id int) (*model.User, error) {
+	u := &model.User{}
+	if err := r.store.db.QueryRow(
+		"SELECT id, email, encrypted_password FROM users WHERE id = $1",
+		id,
+	).Scan(
+		&u.ID,
+		&u.Email,
+		&u.EncryptedPassword,
+	); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, store.ErrRecordNotFound
+		}
+
 		return nil, err
 	}
 
@@ -41,6 +62,10 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 		&u.Email,
 		&u.EncryptedPassword,
 	); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, store.ErrRecordNotFound
+		}
+
 		return nil, err
 	}
 
