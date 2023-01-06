@@ -23,8 +23,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	s := apiserver.New(config) // Передаём порт в качестве аргумента
-	if err := s.Start(); err != nil {
+
+	if err := apiserver.Start(config); err != nil {
 		log.Fatal(err)
 	}
 }
