@@ -2,4 +2,4 @@ bind_addr = ":8080"
 log_level = "debug"
 
 [store]
-database_url = "host=localhost dbname=willknow sslmode=disable"
+database_url = "postgres://levchenko.an:K1~hubnt@127.0.0.1:5432/willknow?sslmode=disable"

@@ -7,8 +7,9 @@ import (
 )
 
 type Store struct {
-	config *Config
-	db     *sql.DB
+	config         *Config
+	db             *sql.DB
+	UserRepository *UserRepository
 }
 
 func New(config *Config) *Store {
@@ -37,4 +38,17 @@ func (s *Store) Open() error {
 // При завершении сервера для отключения от БД.
 func (s *Store) Close() {
 	s.db.Close()
+}
+
+// С Помощью этого метода "внешний мир" сможет использовать репозиторий User.
+func (s *Store) User() *UserRepository {
+	if s.UserRepository != nil {
+		return s.UserRepository
+	}
+
+	s.UserRepository = &UserRepository{
+		store: s,
+	}
+
+	return s.UserRepository
 }
