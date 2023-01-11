@@ -12,13 +12,15 @@ var (
 	configPath string
 )
 
+// Инициализирует конфиг, указывает путь до него
 func init() {
 	flag.StringVar(&configPath, "config-path", "configs/apiserver.toml", "path to config file")
 }
 
+// Главная функция, инициализирует конфиг и запускает apiserver.
 func main() {
 	flag.Parse()
-	config := apiserver.NewConfig() // Инициализируем конфиг
+	config := apiserver.NewConfig()
 	_, err := toml.DecodeFile(configPath, config)
 	if err != nil {
 		log.Fatal(err)

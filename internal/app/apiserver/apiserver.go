@@ -5,6 +5,9 @@ import (
 	"net/http"
 
 	"github.com/WorkLevchenko/willknow/internal/app/store/sqlstore"
+	"github.com/gorilla/securecookie"
+	"github.com/gorilla/sessions"
+	_ "github.com/lib/pq" // ...
 )
 
 func Start(config *Config) error {
@@ -15,7 +18,8 @@ func Start(config *Config) error {
 
 	defer db.Close()
 	store := sqlstore.New(db)
-	s := newServer((store))
+	sessionStore := sessions.NewCookieStore([]byte(securecookie.GenerateRandomKey(32)))
+	s := newServer(store, sessionStore)
 
 	return http.ListenAndServe(config.BindAddr, s)
 }
